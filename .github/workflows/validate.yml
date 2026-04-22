@@ -26,7 +26,7 @@ jobs:
 
       - name: Check HCL formatting
         run: |
-          for dir in gcp-ubuntu ubuntu-docker-mirror ubuntu-docker-local-container tfe-local-mirror; do
+          for dir in gcp-ubuntu ubuntu-docker-mirror ubuntu-docker-local-container tfe-local-mirror tfe-local-mirror-aws tfe-local-mirror-azure tfe-local-mirror-vmware; do
             echo "==> Checking formatting in ${dir}..."
             packer fmt -check -recursive "${dir}"
             echo "    OK"
@@ -40,11 +40,25 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        template:
-          - gcp-ubuntu
-          - ubuntu-docker-mirror
-          - ubuntu-docker-local-container
-          - tfe-local-mirror
+        include:
+          - template: gcp-ubuntu
+            extra_vars: "-var 'project_id=${GCP_PROJECT_ID:-placeholder-project-id}'"
+          - template: ubuntu-docker-mirror
+            extra_vars: "-var 'project_id=${GCP_PROJECT_ID:-placeholder-project-id}'"
+          - template: ubuntu-docker-local-container
+            extra_vars: "-var 'project_id=${GCP_PROJECT_ID:-placeholder-project-id}'"
+          - template: tfe-local-mirror
+            extra_vars: "-var 'project_id=${GCP_PROJECT_ID:-placeholder-project-id}' -var 'tfe_version=1.2.1'"
+            license_dir: tfe-local-mirror
+          - template: tfe-local-mirror-aws
+            extra_vars: ""
+            license_dir: tfe-local-mirror-aws
+          - template: tfe-local-mirror-azure
+            extra_vars: "-var 'subscription_id=placeholder' -var 'resource_group=placeholder'"
+            license_dir: tfe-local-mirror-azure
+          - template: tfe-local-mirror-vmware
+            extra_vars: "-var 'vcenter_server=placeholder' -var 'vcenter_username=placeholder' -var 'vcenter_password=placeholder' -var 'cluster=placeholder' -var 'datastore=placeholder' -var 'network=placeholder'"
+            license_dir: tfe-local-mirror-vmware
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -57,23 +71,12 @@ jobs:
       - name: Initialize Packer plugins
         run: packer init "${{ matrix.template }}"
 
-      - name: Create placeholder license file for tfe-local-mirror validation
-        if: matrix.template == 'tfe-local-mirror'
-        run: echo "placeholder" > tfe-local-mirror/files/terraform.hclic
+      - name: Create placeholder license file
+        if: matrix.license_dir != ''
+        run: echo "placeholder" > "${{ matrix.license_dir }}/files/terraform.hclic"
 
       - name: Validate template
-        run: |
-          if [ "${{ matrix.template }}" = "tfe-local-mirror" ]; then
-            packer validate \
-              -var "project_id=${GCP_PROJECT_ID:-placeholder-project-id}" \
-              -var "tfe_version=1.2.1" \
-              -var "tfe_license_file=tfe-local-mirror/files/terraform.hclic" \
-              "${{ matrix.template }}"
-          else
-            packer validate \
-              -var "project_id=${GCP_PROJECT_ID:-placeholder-project-id}" \
-              "${{ matrix.template }}"
-          fi
+        run: packer validate ${{ matrix.extra_vars }} "${{ matrix.template }}"
         env:
           GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
 

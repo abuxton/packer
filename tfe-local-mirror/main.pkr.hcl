@@ -44,6 +44,6 @@ build {
     environment_vars = [
       "TFE_VERSION=${var.tfe_version}",
     ]
-    scripts = ["${path.root}/scripts/setup-tfe-mirror.sh"]
+    scripts = ["${path.root}/../scripts/setup-tfe-mirror.sh"]
   }
 }

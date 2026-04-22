@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "skills": {
+    "aws-ami-builder": {
+      "source": "hashicorp/agent-skills",
+      "sourceType": "github",
+      "computedHash": "e62206907650a92c7a138f167cb3539ec4763c76c2bae95b58bae5e86906a7bc"
+    },
+    "azure-image-builder": {
+      "source": "hashicorp/agent-skills",
+      "sourceType": "github",
+      "computedHash": "046bbc957a1df2824ff1dae2cc8440fb25672e52145d0f755177eaf76c6ef2f9"
+    },
+    "push-to-registry": {
+      "source": "hashicorp/agent-skills",
+      "sourceType": "github",
+      "computedHash": "11eaa6387c0066d992096f630221c5f51d3cfdcd045797658b494abe60eac9ce"
+    },
+    "terraform-style-guide": {
+      "source": "hashicorp/agent-skills",
+      "sourceType": "github",
+      "computedHash": "1fb650e4627c740f024b80947964769f5f5d58efff54870cef2791324d5aa451"
+    },
+    "windows-builder": {
+      "source": "hashicorp/agent-skills",
+      "sourceType": "github",
+      "computedHash": "19463b4e2fe766c72534889931e5be1d0867727f8ab38cce963fb156f7c25760"
+    }
+  }
+}
