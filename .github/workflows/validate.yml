@@ -48,16 +48,16 @@ jobs:
           - template: ubuntu-docker-local-container
             extra_vars: "-var 'project_id=${GCP_PROJECT_ID:-placeholder-project-id}'"
           - template: tfe-local-mirror
-            extra_vars: "-var 'project_id=${GCP_PROJECT_ID:-placeholder-project-id}' -var 'tfe_version=1.2.1' -var 'tfe_license_file=tfe-local-mirror/files/terraform.hclic'"
+            extra_vars: "-var 'project_id=${GCP_PROJECT_ID:-placeholder-project-id}' -var 'tfe_version=1.2.1'"
             license_dir: tfe-local-mirror
           - template: tfe-local-mirror-aws
-            extra_vars: "-var 'tfe_license_file=tfe-local-mirror-aws/files/terraform.hclic'"
+            extra_vars: ""
             license_dir: tfe-local-mirror-aws
           - template: tfe-local-mirror-azure
-            extra_vars: "-var 'subscription_id=placeholder' -var 'resource_group=placeholder' -var 'tfe_license_file=tfe-local-mirror-azure/files/terraform.hclic'"
+            extra_vars: "-var 'subscription_id=placeholder' -var 'resource_group=placeholder'"
             license_dir: tfe-local-mirror-azure
           - template: tfe-local-mirror-vmware
-            extra_vars: "-var 'vcenter_server=placeholder' -var 'vcenter_username=placeholder' -var 'vcenter_password=placeholder' -var 'cluster=placeholder' -var 'datastore=placeholder' -var 'network=placeholder' -var 'tfe_license_file=tfe-local-mirror-vmware/files/terraform.hclic'"
+            extra_vars: "-var 'vcenter_server=placeholder' -var 'vcenter_username=placeholder' -var 'vcenter_password=placeholder' -var 'cluster=placeholder' -var 'datastore=placeholder' -var 'network=placeholder'"
             license_dir: tfe-local-mirror-vmware
     steps:
       - name: Checkout repository
