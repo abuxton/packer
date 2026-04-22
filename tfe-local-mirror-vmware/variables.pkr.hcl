@@ -99,5 +99,5 @@ variable "tfe_version" {
 variable "tfe_license_file" {
   type        = string
   description = "Local path to the HashiCorp Terraform Enterprise license file (.hclic). Used only during the Packer build to authenticate to images.releases.hashicorp.com. Never committed to source control. './files/terraform.hclic' is the recommended location (git-ignored)."
-  default     = "./files/terraform.hclic"
+  default     = ""
 }

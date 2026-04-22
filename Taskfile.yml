@@ -1,0 +1,101 @@
+version: '3'
+
+vars:
+  TEMPLATE_DIRS:
+    sh: >-
+      find . -type f \( -name '*.pck.hcl' -o -name '*.pkr.hcl' \) -print |
+      sed 's|/[^/]*$||' |
+      sed 's|^\./||' |
+      sort -u |
+      tr '\n' ' '
+
+tasks:
+  default:
+    desc: List available tasks
+    cmds:
+      - task --list
+
+  skills:install-agent:
+    desc: Install/update agent skills lock content
+    cmds:
+      - npx skills experimental_install
+
+  packer:fmt:
+    desc: Run packer fmt -check across all template directories
+    cmds:
+      - |
+        for dir in {{.TEMPLATE_DIRS}}; do
+          echo "==> packer fmt -check ${dir}"
+          packer fmt -check "$dir"
+        done
+
+  packer:init:
+    desc: Run packer init in all template directories
+    cmds:
+      - |
+        for dir in {{.TEMPLATE_DIRS}}; do
+          echo "==> packer init ${dir}"
+          (cd "$dir" && packer init .)
+        done
+
+  packer:validate:
+    desc: Run packer validate in all template directories (pass extra args with VALIDATE_ARGS)
+    cmds:
+      - |
+        for dir in {{.TEMPLATE_DIRS}}; do
+          echo "==> packer validate ${dir}"
+          (cd "$dir" && packer validate {{.VALIDATE_ARGS}} .)
+        done
+
+  packer:validate:syntax:
+    desc: Run packer validate in all template directories (pass extra args with VALIDATE_ARGS)
+    cmds:
+      - |
+        for dir in {{.TEMPLATE_DIRS}}; do
+          echo "==> packer validate -syntax-only ${dir}"
+          (cd "$dir" && packer validate -syntax-only {{.VALIDATE_ARGS}} .)
+        done
+
+  packer:build:
+    desc: Run packer build in all template directories (pass extra args with BUILD_ARGS)
+    cmds:
+      - |
+        for dir in {{.TEMPLATE_DIRS}}; do
+          echo "==> packer build ${dir}"
+          (cd "$dir" && packer build {{.BUILD_ARGS}} .)
+        done
+
+  packer:init:one:
+    desc: Run packer init for one template directory (requires TEMPLATE)
+    requires:
+      vars: [TEMPLATE]
+    cmds:
+      - packer init {{.TEMPLATE}}
+
+  packer:fmt:one:
+    desc: Run packer fmt -check for one template directory (requires TEMPLATE)
+    requires:
+      vars: [TEMPLATE]
+    cmds:
+      - packer fmt -check {{.TEMPLATE}}
+
+  packer:validate:one:
+    desc: Run packer validate for one template directory (requires TEMPLATE, optional VALIDATE_ARGS)
+    requires:
+      vars: [TEMPLATE]
+    cmds:
+      - (cd {{.TEMPLATE}} && packer validate {{.VALIDATE_ARGS}} .)
+
+  packer:build:one:
+    desc: Run packer build for one template directory (requires TEMPLATE, optional BUILD_ARGS)
+    requires:
+      vars: [TEMPLATE]
+    cmds:
+      - (cd {{.TEMPLATE}} && packer build {{.BUILD_ARGS}} .)
+
+  packer:all:
+    desc: Run fmt, init, and validate across all template directories
+    deps:
+      - packer:fmt
+      - packer:init
+      - packer:validate
