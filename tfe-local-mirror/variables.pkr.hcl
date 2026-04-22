@@ -36,10 +36,11 @@ variable "disk_size" {
 variable "tfe_version" {
   type        = string
   description = "Terraform Enterprise image tag to pull (e.g. 'v202506-1'). See https://developer.hashicorp.com/terraform/enterprise/releases"
+  default     = "1.2.1"
 }
 
 variable "tfe_license_file" {
   type        = string
-  description = "Local path to the HashiCorp Terraform Enterprise license file (.hclic). Used only during the Packer build to authenticate to images.releases.hashicorp.com. Never committed to source control."
-  default     = "./files/terraform.hclic"
+  description = "Local path to the HashiCorp Terraform Enterprise license file (.hclic). Used only during the Packer build to authenticate to images.releases.hashicorp.com. Never committed to source control. `./files/tfe.hclic` is recommended as a location for this file, and is included in .gitignore."
+  default     = ""
 }
