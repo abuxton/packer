@@ -1,0 +1,19 @@
+# Conservative Unix-first defaults.
+# text=auto lets Git detect text files and normalise line endings in the index;
+# explicit eol=lf rules below pin the working-tree ending for files that are
+# executed or consumed by Unix-only tooling and must never arrive with CRLF.
+* text=auto
+
+# Packer HCL2 templates — parsed by Packer on Linux/macOS; keep LF
+*.hcl text eol=lf
+
+# Shell provisioner scripts — executed on Linux GCP build VMs; CRLF breaks shebang
+*.sh text eol=lf
+
+# YAML — GitHub Actions workflows and any future config; keep LF
+*.yml  text eol=lf
+*.yaml text eol=lf
+
+# Documentation and plain text
+*.md   text eol=lf
+*.txt  text eol=lf
