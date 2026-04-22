@@ -1,5 +1,11 @@
 # Packer Templates
 
+[![Validate](https://img.shields.io/github/actions/workflow/status/abuxton/packer/validate.yml?branch=main&label=validate&logo=githubactions&logoColor=white)](https://github.com/abuxton/packer/actions/workflows/validate.yml)
+[![License](https://img.shields.io/github/license/abuxton/packer)](https://github.com/abuxton/packer/blob/main/LICENSE)
+[![HashiCorp Packer](https://img.shields.io/badge/HashiCorp-Packer-02A8EF?logo=packer&logoColor=white)](https://developer.hashicorp.com/packer)
+[![Last Commit](https://img.shields.io/github/last-commit/abuxton/packer)](https://github.com/abuxton/packer/commits/main)
+[![Top Language](https://img.shields.io/github/languages/top/abuxton/packer)](https://github.com/abuxton/packer)
+
 A collection of [HashiCorp Packer](https://developer.hashicorp.com/packer) templates for building machine images across multiple cloud providers and platforms: Google Cloud Platform (GCE), Amazon Web Services (AMI), Microsoft Azure (Managed Image), and VMware vSphere.
 
 Each build lives in its own directory so it can be iterated on and run independently.
