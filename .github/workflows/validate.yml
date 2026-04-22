@@ -1,0 +1,80 @@
+---
+name: Validate Packer Templates
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  fmt:
+    name: Format Check
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Packer
+        uses: hashicorp/setup-packer@main
+        with:
+          version: latest
+
+      - name: Check HCL formatting
+        run: |
+          for dir in gcp-ubuntu ubuntu-docker-mirror ubuntu-docker-local-container; do
+            echo "==> Checking formatting in ${dir}..."
+            packer fmt -check -recursive "${dir}"
+            echo "    OK"
+          done
+
+  validate:
+    name: Validate Templates
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        template:
+          - gcp-ubuntu
+          - ubuntu-docker-mirror
+          - ubuntu-docker-local-container
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Packer
+        uses: hashicorp/setup-packer@main
+        with:
+          version: latest
+
+      - name: Initialize Packer plugins
+        run: packer init "${{ matrix.template }}"
+
+      - name: Validate template
+        run: |
+          packer validate \
+            -var "project_id=${GCP_PROJECT_ID:-placeholder-project-id}" \
+            "${{ matrix.template }}"
+        env:
+          GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+
+  shellcheck:
+    name: Shell Script Lint
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@master
+        with:
+          scandir: "."
+          severity: warning
