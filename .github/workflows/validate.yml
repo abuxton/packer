@@ -26,7 +26,7 @@ jobs:
 
       - name: Check HCL formatting
         run: |
-          for dir in gcp-ubuntu ubuntu-docker-mirror ubuntu-docker-local-container tfe-local-mirror tfe-local-mirror-aws tfe-local-mirror-azure tfe-local-mirror-vmware; do
+          for dir in gcp-ubuntu ubuntu-docker-mirror ubuntu-docker-local-container tfe-local-mirror-gcp tfe-local-mirror-aws tfe-local-mirror-azure tfe-local-mirror-vmware; do
             echo "==> Checking formatting in ${dir}..."
             packer fmt -check -recursive "${dir}"
             echo "    OK"
