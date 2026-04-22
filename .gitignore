@@ -113,3 +113,6 @@ terraform.rc
 # HashiCorp license files — never commit
 *.hclic
 **/files/*.hclic
+
+# ignore agent skills
+/**/skills

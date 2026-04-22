@@ -1,0 +1,32 @@
+#cloud-config
+autoinstall:
+  version: 1
+  locale: en_US.UTF-8
+  keyboard:
+    layout: us
+  network:
+    network:
+      version: 2
+      ethernets:
+        any:
+          match:
+            name: en*
+          dhcp4: true
+  storage:
+    layout:
+      name: lvm
+  identity:
+    hostname: packer-tfe-mirror
+    username: packer
+    # Password: 'packer' — hashed with sha512crypt.
+    # This password is locked by the Packer build after provisioning completes.
+    password: "$6$rounds=4096$bXV4YXBhY2tlcg$Gp1Hy5FmW8bJkL9qN2dRtE7sA3cIzO6vPuMw0YeKXfnT1QDhSZuCrgBoilVj4W/xNmHpkqFyewTd8sURA5a3O0"
+  ssh:
+    install-server: true
+    allow-pw: true
+  packages:
+    - qemu-guest-agent
+    - open-vm-tools
+  late-commands:
+    - echo 'packer ALL=(ALL) NOPASSWD:ALL' > /target/etc/sudoers.d/packer-build
+    - chmod 440 /target/etc/sudoers.d/packer-build
