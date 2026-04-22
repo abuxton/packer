@@ -21,6 +21,14 @@ source "googlecompute" "tfe-local-mirror" {
   disk_type           = "pd-ssd"
 }
 
+locals {
+  resolved_tfe_license_file = (
+    substr(var.tfe_license_file, 0, 1) == "/" ?
+    var.tfe_license_file :
+    "${path.root}/${var.tfe_license_file}"
+  )
+}
+
 build {
   name    = "tfe-local-mirror"
   sources = ["source.googlecompute.tfe-local-mirror"]
@@ -28,7 +36,7 @@ build {
   # Upload the license file to a temporary location on the build VM.
   # It is used only for docker login and is deleted by the script before the image is finalised.
   provisioner "file" {
-    source      = var.tfe_license_file
+    source      = local.resolved_tfe_license_file
     destination = "/tmp/tfe.hclic"
   }
 
