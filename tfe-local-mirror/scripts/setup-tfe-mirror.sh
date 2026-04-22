@@ -107,7 +107,9 @@ sudo docker logout images.releases.hashicorp.com
 sudo rm -f /root/.docker/config.json
 sudo rm -f /tmp/tfe.hclic
 
-# Also clean up the pulled source image layers (only local copy needed)
+# Clean up local Docker image tags; the registry copy in /var/lib/registry is the
+# only copy needed for the final image.
+sudo docker rmi "${LOCAL_TAG}" || true
 sudo docker rmi "${TFE_IMAGE}" || true
 
 # ---------------------------------------------------------------------------
