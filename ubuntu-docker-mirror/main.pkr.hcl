@@ -28,4 +28,9 @@ build {
   provisioner "shell" {
     scripts = ["${path.root}/scripts/setup-docker-mirror.sh"]
   }
+
+  provisioner "shell" {
+    environment_vars = ["TFC_AGENT_VERSION=${var.tfc_agent_version}"]
+    scripts          = ["${path.root}/scripts/setup-tfc-agent.sh"]
+  }
 }
