@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # setup-tfe-mirror.sh
 # Installs Docker CE, authenticates to the HashiCorp container registry,
-# pulls the Terraform Enterprise image, and stores it in a local Docker
+# pulls the Terraform Enterprise and TFC agent images, and stores them in a local Docker
 # Registry v2 instance served on localhost:5000 at boot via systemd.
 #
 # Required environment variables (set by Packer):
@@ -14,6 +14,8 @@ set -euo pipefail
 
 TFE_IMAGE="images.releases.hashicorp.com/hashicorp/terraform-enterprise:${TFE_VERSION}"
 LOCAL_TAG="localhost:5000/hashicorp/terraform-enterprise:${TFE_VERSION}"
+TFC_AGENT_IMAGE="docker.io/hashicorp/tfc-agent:latest"
+TFC_AGENT_LOCAL_TAG="localhost:5000/hashicorp/tfc-agent:latest"
 
 echo "==> Waiting for cloud-init to complete..."
 sudo cloud-init status --wait || true
@@ -88,19 +90,24 @@ for i in $(seq 1 30); do
 done
 
 # ---------------------------------------------------------------------------
-# Authenticate, pull TFE image, push to local registry, then clean up creds
+# Authenticate, pull upstream images, push to local registry, then clean up creds
 # ---------------------------------------------------------------------------
 echo "==> Logging in to HashiCorp container registry..."
-sudo docker login --username terraform images.releases.hashicorp.com --password-stdin < /tmp/tfe.hclic
+sudo cat /tmp/tfe.hclic | sudo docker login --username terraform images.releases.hashicorp.com --password-stdin
 
 echo "==> Pulling Terraform Enterprise image: ${TFE_IMAGE}..."
 sudo docker pull "${TFE_IMAGE}"
 
+echo "==> Pulling TFC agent image: ${TFC_AGENT_IMAGE}..."
+sudo docker pull "${TFC_AGENT_IMAGE}"
+
 echo "==> Tagging image for local registry..."
 sudo docker tag "${TFE_IMAGE}" "${LOCAL_TAG}"
+sudo docker tag "${TFC_AGENT_IMAGE}" "${TFC_AGENT_LOCAL_TAG}"
 
 echo "==> Pushing image to local registry..."
 sudo docker push "${LOCAL_TAG}"
+sudo docker push "${TFC_AGENT_LOCAL_TAG}"
 
 echo "==> Logging out and removing credentials..."
 sudo docker logout images.releases.hashicorp.com
@@ -111,6 +118,8 @@ sudo rm -f /tmp/tfe.hclic
 # only copy needed for the final image.
 sudo docker rmi "${LOCAL_TAG}" || true
 sudo docker rmi "${TFE_IMAGE}" || true
+sudo docker rmi "${TFC_AGENT_LOCAL_TAG}" || true
+sudo docker rmi "${TFC_AGENT_IMAGE}" || true
 
 # ---------------------------------------------------------------------------
 # Stop seed registry; set up persistent systemd service
@@ -163,7 +172,7 @@ for i in $(seq 1 30); do
 done
 
 # ---------------------------------------------------------------------------
-# Verify the image is accessible in the local registry
+# Verify images are accessible in the local registry
 # ---------------------------------------------------------------------------
 echo "==> Verifying TFE image is available in local registry..."
 curl -sf "http://localhost:5000/v2/hashicorp/terraform-enterprise/tags/list" \
@@ -171,7 +180,14 @@ curl -sf "http://localhost:5000/v2/hashicorp/terraform-enterprise/tags/list" \
   && echo "  Image 'hashicorp/terraform-enterprise:${TFE_VERSION}' found in local registry." \
   || echo "  WARNING: Could not verify image in local registry via tags API."
 
+echo "==> Verifying TFC agent image is available in local registry..."
+curl -sf "http://localhost:5000/v2/hashicorp/tfc-agent/tags/list" \
+  | grep -q '"latest"' \
+  && echo "  Image 'hashicorp/tfc-agent:latest' found in local registry." \
+  || echo "  WARNING: Could not verify tfc-agent image in local registry via tags API."
+
 echo "==> TFE local mirror setup complete."
 echo "    TFE image        : ${LOCAL_TAG}"
+echo "    TFC agent image  : ${TFC_AGENT_LOCAL_TAG}"
 echo "    Registry address : http://localhost:5000"
 echo "    Registry data    : /var/lib/registry"

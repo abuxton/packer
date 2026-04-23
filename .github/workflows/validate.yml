@@ -47,9 +47,9 @@ jobs:
             extra_vars: "-var 'project_id=${GCP_PROJECT_ID:-placeholder-project-id}'"
           - template: ubuntu-docker-local-container
             extra_vars: "-var 'project_id=${GCP_PROJECT_ID:-placeholder-project-id}'"
-          - template: tfe-local-mirror
+          - template: tfe-local-mirror-gcp
             extra_vars: "-var 'project_id=${GCP_PROJECT_ID:-placeholder-project-id}' -var 'tfe_version=1.2.1'"
-            license_dir: tfe-local-mirror
+            license_dir: tfe-local-mirror-gcp
           - template: tfe-local-mirror-aws
             extra_vars: ""
             license_dir: tfe-local-mirror-aws
