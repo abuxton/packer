@@ -32,3 +32,9 @@ variable "disk_size" {
   description = "The size of the boot disk in GB. Extra space is recommended for the registry cache."
   default     = 50
 }
+
+variable "tfc_agent_version" {
+  type        = string
+  description = "Version of the hashicorp/tfc-agent Docker image to pre-pull into the registry mirror."
+  default     = "1.22.0"
+}
