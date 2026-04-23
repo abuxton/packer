@@ -1,7 +1,7 @@
 # tfe-local-mirror-aws
 
 Packer template that builds an AWS AMI (Ubuntu 24.04 LTS) with Terraform Enterprise
-pre-loaded into a local Docker registry. The resulting AMI is used for air-gapped or
+and `hashicorp/tfc-agent:latest` pre-loaded into a local Docker registry. The resulting AMI is used for air-gapped or
 offline TFE deployments where pulling the image at runtime is not permitted.
 
 **Reference:** <https://developer.hashicorp.com/terraform/enterprise/deploy/docker>

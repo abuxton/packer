@@ -1,7 +1,7 @@
 # tfe-local-mirror-azure
 
 Packer template that builds an Azure Managed Image (Ubuntu 24.04 LTS) with Terraform
-Enterprise pre-loaded into a local Docker registry. The resulting image is used for
+Enterprise and `hashicorp/tfc-agent:latest` pre-loaded into a local Docker registry. The resulting image is used for
 air-gapped or offline TFE deployments where pulling the image at runtime is not permitted.
 
 **Reference:** <https://developer.hashicorp.com/terraform/enterprise/deploy/docker>

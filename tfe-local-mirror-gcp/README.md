@@ -1,7 +1,7 @@
 # `tfe-local-mirror` — Terraform Enterprise local image mirror
 
 Builds a Google Compute Engine image (Ubuntu 24.04 LTS) that pre-loads the
-**Terraform Enterprise** container image into a local Docker Registry v2
+**Terraform Enterprise** and **hashicorp/tfc-agent** container images into a local Docker Registry v2
 instance. VMs started from this image can launch TFE immediately, without
 requiring outbound access to `images.releases.hashicorp.com`.
 
@@ -122,11 +122,12 @@ packer build -var-file="tfe.pkrvars.hcl" .
 4. Pulls `registry:2` and starts a temporary seed registry
 5. Authenticates to `images.releases.hashicorp.com` using your license as the password
 6. Pulls `hashicorp/terraform-enterprise:<tfe_version>`
-7. Retags the image as `localhost:5000/hashicorp/terraform-enterprise:<tfe_version>` and pushes it into the local registry
-8. Logs out from HashiCorp registry and removes all credential files
-9. Removes the upstream image layers (only local copy is kept)
-10. Installs a `tfe-local-registry` systemd service that starts the registry on boot
-11. Verifies the image is accessible via the registry API
+7. Pulls `hashicorp/tfc-agent:latest` from Docker Hub
+8. Retags both images as `localhost:5000/hashicorp/...` and pushes them into the local registry
+9. Logs out from HashiCorp registry and removes all credential files
+10. Removes the upstream image layers (only local copies are kept)
+11. Installs a `tfe-local-registry` systemd service that starts the registry on boot
+12. Verifies both images are accessible via the registry API
 
 ---
 
@@ -136,6 +137,7 @@ When a VM is started from this image:
 
 - The local registry starts automatically on port `5000`
 - The TFE image is available at `localhost:5000/hashicorp/terraform-enterprise:<tfe_version>`
+- The TFC agent image is available at `localhost:5000/hashicorp/tfc-agent:latest`
 
 Reference it in your Docker Compose deployment file:
 

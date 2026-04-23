@@ -1,7 +1,7 @@
 # tfe-local-mirror-vmware
 
 Packer template that builds a VMware vSphere VM template (Ubuntu 24.04 LTS) with Terraform
-Enterprise pre-loaded into a local Docker registry. The resulting vSphere template is used
+Enterprise and `hashicorp/tfc-agent:latest` pre-loaded into a local Docker registry. The resulting vSphere template is used
 for air-gapped or offline TFE deployments where pulling the image at runtime is not permitted.
 
 **Reference:** <https://developer.hashicorp.com/terraform/enterprise/deploy/docker>
