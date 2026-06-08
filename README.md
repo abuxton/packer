@@ -429,3 +429,18 @@ To enable full `packer validate` with real GCP project resolution, set the follo
 - [Shell provisioner](https://developer.hashicorp.com/packer/docs/provisioners/shell)
 - [Terraform Enterprise releases](https://developer.hashicorp.com/terraform/enterprise/releases)
 - [Deploy TFE with Docker](https://developer.hashicorp.com/terraform/enterprise/deploy/docker)
+
+---
+
+## Terraform Modules
+
+The [`terraform/`](./terraform/) directory contains Terraform modules for deploying the **ubuntu-docker-mirror** image as a horizontally scalable, highly available service on each major cloud platform.
+
+| Module | Cloud | Description |
+|--------|-------|-------------|
+| [`terraform/aws/`](./terraform/aws/) | AWS | EC2 Auto Scaling Group + ALB + Route 53 |
+| [`terraform/azure/`](./terraform/azure/) | Azure | VM Scale Set + Azure Load Balancer + Azure DNS |
+| [`terraform/gcp/`](./terraform/gcp/) | GCP | Regional Managed Instance Group + Cloud Load Balancer + Cloud DNS |
+
+See [`terraform/README.md`](./terraform/README.md) for full usage and quick-start examples.
+
