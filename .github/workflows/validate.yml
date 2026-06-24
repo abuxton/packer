@@ -57,7 +57,7 @@ jobs:
             extra_vars: "-var 'subscription_id=placeholder' -var 'resource_group=placeholder'"
             license_dir: tfe-local-mirror-azure
           - template: tfe-local-mirror-vmware
-            extra_vars: "-var 'vcenter_server=placeholder' -var 'vcenter_username=placeholder' -var 'vcenter_password=placeholder' -var 'cluster=placeholder' -var 'datastore=placeholder' -var 'network=placeholder'"
+            extra_vars: "-var 'vcenter_server=placeholder' -var 'vcenter_username=placeholder' -var 'vcenter_password=placeholder' -var 'cluster=placeholder' -var 'datastore=placeholder' -var 'network=placeholder' -var 'iso_checksum=none'"
             license_dir: tfe-local-mirror-vmware
     steps:
       - name: Checkout repository
